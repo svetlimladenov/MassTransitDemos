@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Sample.Service": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

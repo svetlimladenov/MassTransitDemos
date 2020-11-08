@@ -36,7 +36,11 @@ namespace Library.Components.StateMachines
                         context.Data.MemberId,
                         context.Data.BookId
                     }))
+                    .TransitionTo(Reserved)
             );
+
+            During(Reserved,
+                Ignore(ReservationRequested));
         }
 
         public Event<BookAdded> Added { get; set;}

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Library.Components.StateMachines;
 using Library.Books.Service.Consumers;
+using System.Reflection;
 
 namespace Library.Books.Service
 {
@@ -20,7 +21,9 @@ namespace Library.Books.Service
                 {
                     serviceCollection.AddMassTransit(cfg =>
                     {
-                        cfg.AddConsumersFromNamespaceContaining<BookReservedConsumer>();
+                        //cfg.AddConsumersFromNamespaceContaining<BookReservedConsumer>();
+
+                        cfg.AddConsumers(Assembly.GetExecutingAssembly());
 
                         cfg.AddSagaStateMachine<BookStateMachine, Book>().InMemoryRepository();
 

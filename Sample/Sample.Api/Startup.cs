@@ -39,9 +39,11 @@ namespace Sample.Api
             {
                 cfg.UsingRabbitMq(BusFactory.CreateBus);
 
-                cfg.AddRequestClient<SubmitOrder>(new Uri("rabbitmq://localhost/submit-order"));
-                cfg.AddRequestClient<GetOrderInfo>(new Uri("rabbitmq://localhost/get-order-info"));
+                cfg.AddRequestClient<SubmitOrder>();
+                cfg.AddRequestClient<GetOrderInfo>();
             });
+
+            services.AddMassTransitHostedService();
 
             services.AddControllers();
         }

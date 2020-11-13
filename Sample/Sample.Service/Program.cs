@@ -20,12 +20,13 @@ namespace Sample.Service
             var builder = new HostBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+                   // services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
 
                     services.AddMassTransit((cfg) =>
                     {
                         cfg.UsingRabbitMq(BusFactory.CreateBus);
                         cfg.AddConsumers(Assembly.GetExecutingAssembly());
+                        cfg.AddActivities(Assembly.GetExecutingAssembly());
                     });
 
                     services.AddHostedService<MassTransitConsoleHostedService>();

@@ -14,7 +14,7 @@ namespace Sample.Api.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ILogger<OrderController> logger;
-        private readonly IRequestClient<SubmitOrder> requestClient;
+        private readonly IRequestClient<SubmitOrder> submitOrderRequestClient;
         private readonly IRequestClient<GetOrderInfo> getOrderInfoClieng;
         private readonly IPublishEndpoint publishEndpoint;
 
@@ -26,7 +26,7 @@ namespace Sample.Api.Controllers
         {
             this.logger = logger;
             this.publishEndpoint = publishEndpoint;
-            this.requestClient = submitOrderClient;
+            this.submitOrderRequestClient = submitOrderClient;
             this.getOrderInfoClieng = getOrderInfoClieng;
         }
 
@@ -51,7 +51,7 @@ namespace Sample.Api.Controllers
         public async Task<IActionResult> SubmitOrder(string customerNumber, string orderId)
         {
             // Here we make requst with SubmitOrder message and wait for response
-            var(accepted, rejected) = await requestClient.GetResponse<OrderSubmissionAccepted, OrderSubmissionRejected>(new 
+            var(accepted, rejected) = await submitOrderRequestClient.GetResponse<OrderSubmissionAccepted, OrderSubmissionRejected>(new 
             {
                 OrderId = orderId,
                 CustomerNumber = customerNumber

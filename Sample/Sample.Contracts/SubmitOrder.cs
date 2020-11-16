@@ -4,8 +4,8 @@ namespace Sample.Contracts
 {
     public interface SubmitOrder
     {
-        public Guid OrderId { get; set; }
+        Guid OrderId { get; }
 
-        public string CustomerNumber { get; set; }
+        string CustomerNumber { get; }
     }
 }

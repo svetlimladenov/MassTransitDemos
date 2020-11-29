@@ -5,6 +5,7 @@ using Sample.Components;
 using Sample.Contracts;
 using Sample.Contracts.UtilizeCredit;
 using Sample.Api.ViewModels;
+using AutoMapper;
 
 namespace Sample.Api.Controllers
 {
@@ -14,11 +15,13 @@ namespace Sample.Api.Controllers
     {
         private readonly IPublishEndpoint publishEndpoint;
         private readonly IClientFactory clientFactory;
+        private readonly IMapper mapper;
 
-        public CreditController(IPublishEndpoint publishEndpoint, IClientFactory clientFactory)
+        public CreditController(IPublishEndpoint publishEndpoint, IClientFactory clientFactory, IMapper mapper)
         {
             this.publishEndpoint = publishEndpoint;
             this.clientFactory = clientFactory;
+            this.mapper = mapper;
         }
 
         public async Task<IActionResult> Post(int creditId)
@@ -29,19 +32,16 @@ namespace Sample.Api.Controllers
         }
 
         [HttpPost("CreateCredit")]
-        public async Task<IActionResult> CreateCredit(CreateCreditInputModel inputModel)
+        public async Task<IActionResult> CreateCredit(UtilizeCreditInputModel inputModel)
         {
-            var requestClient = this.clientFactory.CreateRequestClient<UtilizeCreditRequested>();
-
-            var model = new CreateCreditDTO
+            var messageData = new
             {
-                ExternalId = inputModel.ExternalId,
-                Sum = inputModel.Sum,
-                UtilizationDate = inputModel.UtilizationDate,
-                FirstPaymentDate =  inputModel.FirstPaymentDate
+                CreateCredit = mapper.Map<CreateCreditDTO>(inputModel.CreateCredit),
+                BonusPoints = mapper.Map<BonusPointDTO>(inputModel.BonusPoints),
             };
 
-            using (var request = requestClient.Create(new { CreateCredit = model }))
+            var requestClient = this.clientFactory.CreateRequestClient<UtilizeCreditRequested>();
+            using (var request = requestClient.Create(messageData))
             {
                 var (statusResponse, errorResponse) = await request.GetResponses<UtilizeCreditCompleted, UtilizeCreditFaulted>();
 

@@ -2,6 +2,6 @@
 {
     public interface UtilizeCreditCompleted
     {
-        int Id { get; }
+        string ExternalId { get; }
     }
 }

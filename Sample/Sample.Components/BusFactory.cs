@@ -8,7 +8,7 @@ namespace Sample.Components
     {
         public static void CreateBus(IBusRegistrationContext context, IRabbitMqBusFactoryConfigurator configurator)
         {
-            configurator.Host(new Uri("rabbitmq://localhost"), h =>
+            configurator.Host(new Uri("rabbitmq://localhost/test"), h =>
             {
                 h.Username("guest");
                 h.Password("guest");

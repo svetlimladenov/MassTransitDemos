@@ -8,6 +8,7 @@ using MassTransit.Definition;
 using Sample.Service.Consumers;
 using Serilog;
 using System.Reflection;
+using Sample.Service.Sagas;
 
 namespace Sample.Service
 {
@@ -25,8 +26,10 @@ namespace Sample.Service
                     services.AddMassTransit((cfg) =>
                     {
                         cfg.UsingRabbitMq(BusFactory.CreateBus);
-                        cfg.AddConsumers(Assembly.GetExecutingAssembly());
-                        cfg.AddActivities(Assembly.GetExecutingAssembly());
+                        //cfg.AddConsumers(Assembly.GetExecutingAssembly());
+                        //cfg.AddActivities(Assembly.GetExecutingAssembly());
+                        cfg.AddConsumer<CreateCreditConsumer>();
+                        cfg.AddSagaStateMachine<UtilizeCreditStateMachine, UtilizeCredit>().InMemoryRepository();
                     });
 
                     services.AddHostedService<MassTransitConsoleHostedService>();

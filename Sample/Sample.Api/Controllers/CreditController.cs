@@ -6,6 +6,7 @@ using Sample.Contracts;
 using Sample.Contracts.UtilizeCredit;
 using Sample.Api.ViewModels;
 using AutoMapper;
+using Sample.Contracts.UtilizeCredit.GetCreditUtilizationInfo;
 
 namespace Sample.Api.Controllers
 {
@@ -34,6 +35,16 @@ namespace Sample.Api.Controllers
         [HttpPost("CreateCredit")]
         public async Task<IActionResult> CreateCredit(UtilizeCreditInputModel inputModel)
         {
+            var getInfoClient = this.clientFactory.CreateRequestClient<GetCreditUtilizationInfo>();
+            using (var request = getInfoClient.Create(new { inputModel.CreateCredit.ExternalId }))
+            {
+                var stateResponse = await request.GetResponse<CreditUtilizationInfo>();
+                if (stateResponse.Message.State != "Not found")
+                {
+                    return Ok(stateResponse.Message.State);
+                }
+            }
+
             var messageData = new
             {
                 CreateCredit = mapper.Map<CreateCreditDTO>(inputModel.CreateCredit),

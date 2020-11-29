@@ -2,6 +2,7 @@
 using MassTransit;
 using Sample.Contracts.UtilizeCredit;
 using Sample.Contracts.UtilizeCredit.CreateCreditEvents;
+using Sample.Contracts.UtilizeCredit.GetCreditUtilizationInfo;
 using System;
 
 namespace Sample.Service.Sagas
@@ -30,8 +31,17 @@ namespace Sample.Service.Sagas
                 });
             });
 
-            Event(() => CreateCreditCompleted, x => x.CorrelateBy(i => i.ExternalId, m => m.Message.ExternalId));
+            Event(() => GetCreditUtilizationInfo, x =>
+            {
+                x.CorrelateBy(i => i.ExternalId, m => m.Message.ExternalId);
 
+                x.OnMissingInstance(m => m.ExecuteAsync(x => x.RespondAsync<CreditUtilizationInfo>(new
+                {
+                    State = "Not found"
+                })));
+            });
+
+            Event(() => CreateCreditCompleted, x => x.CorrelateBy(i => i.ExternalId, m => m.Message.ExternalId));
             Event(() => CreateCreditFaulted, x => x.CorrelateBy(i => i.ExternalId, m => m.Message.ExternalId));
 
             Initially(
@@ -41,6 +51,13 @@ namespace Sample.Service.Sagas
                         context.Data.CreateCredit
                     }))
                     .TransitionTo(Utilizing));
+
+            DuringAny(
+                When(GetCreditUtilizationInfo)
+                    .RespondAsync(context => context.Init<CreditUtilizationInfo>(new
+                    {
+                        State = context.Instance.CurrentState
+                    })));
 
             During(Utilizing,
                 When(CreateCreditCompleted)
@@ -59,6 +76,8 @@ namespace Sample.Service.Sagas
         }
 
         public Event<UtilizeCreditRequested> UtilizeCreditRequested { get; set; }
+
+        public Event<GetCreditUtilizationInfo> GetCreditUtilizationInfo { get; set; }
 
         public Event<CreateCreditCompleted> CreateCreditCompleted { get; set; }
 

@@ -16,6 +16,8 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using MassTransit.Definition;
 using Sample.Contracts;
+using AutoMapper;
+using Sample.Api.Automapper;
 
 namespace Sample.Api
 {
@@ -31,9 +33,11 @@ namespace Sample.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOpenApiDocument();
+            services.AddOpenApiDocument(config => config.AllowReferencesWithProperties = true);
 
             services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
+
+            services.AddAutoMapper(typeof(ApiMapperProfile));
 
             services.AddMassTransit(cfg =>
             {

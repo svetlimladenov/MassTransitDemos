@@ -1,0 +1,212 @@
+{
+    "resultId": "659f25a2-bd96-416e-b87a-5fed41ae4d2b",
+    "probeId": "6765603b-4e17-4948-986c-ddb1461a8c10",
+    "startTimestamp": "2020-12-01T22:10:07.9611936Z",
+    "duration": "00:00:00.0562391",
+    "host": {
+      "machineName": "DESKTOP-8TBJRUS",
+      "processName": "Sample.Service",
+      "processId": 9032,
+      "assembly": "Sample.Service",
+      "assemblyVersion": "1.0.0.0",
+      "frameworkVersion": "3.1.8",
+      "greenPipesVersion": "4.0.0.0",
+      "operatingSystemVersion": "Microsoft Windows NT 6.2.9200.0"
+    },
+    "results": {
+      "bus": {
+        "address": "rabbitmq://localhost:0/test/DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o?temporary=true",
+        "host": {
+          "type": "RabbitMQ",
+          "host": "localhost",
+          "port": 5672,
+          "virtualHost": "test",
+          "username": "guest",
+          "password": "*****",
+          "heartbeat": "00:00:00",
+          "ssl": false,
+          "receiveEndpoint": [
+            {
+              "name": "Goshe",
+              "transport": {
+                "type": "RabbitMQ",
+                "exchangeName": "Goshe",
+                "exchangeArguments": [],
+                "exchangeType": "fanout",
+                "durable": true,
+                "autoDelete": false,
+                "exclusive": false,
+                "queueName": "Goshe",
+                "queueArguments": [],
+                "bindingArguments": [],
+                "prefetchCount": 16,
+                "purgeOnStartup": false,
+                "exclusiveConsumer": false,
+                "noAck": false,
+                "bindQueue": true,
+                "consumeArguments": [],
+                "topology": {
+                  "exchange": [
+                    {
+                      "name": "Goshe",
+                      "type": "fanout",
+                      "durable": true,
+                      "autoDelete": false
+                    },
+                    {
+                      "name": "Sample.Contracts:MessageToGoshe",
+                      "type": "fanout",
+                      "durable": true,
+                      "autoDelete": false
+                    }
+                  ],
+                  "queue": {
+                    "name": "Goshe",
+                    "durable": true,
+                    "autoDelete": false,
+                    "exclusive": false
+                  },
+                  "exchange-binding": {
+                    "source": "Sample.Contracts:MessageToGoshe",
+                    "destination": "Goshe"
+                  },
+                  "queue-binding": {
+                    "source": "Goshe",
+                    "destination": "Goshe"
+                  }
+                }
+              },
+              "filters": [
+                {
+                  "filterType": "deadLetter",
+                  "filters": {
+                    "filterType": "dead-letter"
+                  }
+                },
+                {
+                  "filterType": "rescue",
+                  "filters": [
+                    {
+                      "filterType": "generateFault"
+                    },
+                    {
+                      "filterType": "moveFault"
+                    }
+                  ]
+                },
+                {
+                  "filterType": "deserialize",
+                  "deserializers": {
+                    "json": {
+                      "contentType": "application/vnd.masstransit+json"
+                    },
+                    "bson": {
+                      "contentType": "application/vnd.masstransit+bson"
+                    },
+                    "xml": {
+                      "contentType": "application/vnd.masstransit+xml"
+                    }
+                  },
+                  "consumePipe": {
+                    "filters": {
+                      "filterType": "dispatchPipe",
+                      "outputType": "MassTransit.ConsumeContext<Sample.Contracts.MessageToGoshe>",
+                      "consumer": {
+                        "type": "Sample.Service.Consumers.GosheConsumer",
+                        "consumerFactory": {
+                          "source": "scope",
+                          "consumerType": "Sample.Service.Consumers.GosheConsumer",
+                          "provider": "dependencyInjection"
+                        },
+                        "consume": {
+                          "method": "Consume(ConsumeContext<Sample.Contracts.MessageToGoshe> context)"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o",
+              "transport": {
+                "type": "RabbitMQ",
+                "exchangeName": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o",
+                "exchangeArguments": [],
+                "exchangeType": "fanout",
+                "durable": false,
+                "autoDelete": true,
+                "exclusive": false,
+                "queueExpiration": "00:01:00",
+                "queueName": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o",
+                "queueArguments": [],
+                "bindingArguments": [],
+                "prefetchCount": 16,
+                "purgeOnStartup": false,
+                "exclusiveConsumer": false,
+                "noAck": false,
+                "bindQueue": true,
+                "consumeArguments": [],
+                "topology": {
+                  "exchange": {
+                    "name": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o",
+                    "type": "fanout",
+                    "durable": false,
+                    "autoDelete": true
+                  },
+                  "queue": {
+                    "name": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o",
+                    "durable": false,
+                    "autoDelete": false,
+                    "exclusive": false,
+                    "argument": {
+                      "key": "x-expires",
+                      "value": 60000
+                    }
+                  },
+                  "queue-binding": {
+                    "source": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o",
+                    "destination": "DESKTOP8TBJRUS_SampleService_bus_mhfoyyrqg4qf3ingbdcjctqh8o"
+                  }
+                }
+              },
+              "filters": [
+                {
+                  "filterType": "deadLetter",
+                  "filters": {
+                    "filterType": "dead-letter"
+                  }
+                },
+                {
+                  "filterType": "rescue",
+                  "filters": [
+                    {
+                      "filterType": "generateFault"
+                    },
+                    {
+                      "filterType": "moveFault"
+                    }
+                  ]
+                },
+                {
+                  "filterType": "deserialize",
+                  "deserializers": {
+                    "json": {
+                      "contentType": "application/vnd.masstransit+json"
+                    },
+                    "bson": {
+                      "contentType": "application/vnd.masstransit+bson"
+                    },
+                    "xml": {
+                      "contentType": "application/vnd.masstransit+xml"
+                    }
+                  },
+                  "consumePipe": {}
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }

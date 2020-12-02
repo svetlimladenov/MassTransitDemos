@@ -9,6 +9,7 @@ using Sample.Service.Consumers;
 using Serilog;
 using System.Reflection;
 using Sample.Service.Sagas;
+using Sample.Contracts;
 
 namespace Sample.Service
 {
@@ -22,14 +23,14 @@ namespace Sample.Service
                 .ConfigureServices((hostContext, services) =>
                 {
                    // services.TryAddSingleton(KebabCaseEndpointNameFormatter.Instance);
-
+                    services.AddScoped<IMessageValidator<MessageToGoshe>, MessageValidator<MessageToGoshe>>();
                     services.AddMassTransit((cfg) =>
                     {
                         cfg.UsingRabbitMq(BusFactory.CreateBus);
                         //cfg.AddConsumers(Assembly.GetExecutingAssembly());
                         //cfg.AddActivities(Assembly.GetExecutingAssembly());
-                        cfg.AddConsumer<CreateCreditConsumer>();
-                        cfg.AddSagaStateMachine<UtilizeCreditStateMachine, UtilizeCredit>().InMemoryRepository();
+                        cfg.AddConsumer<GosheConsumer>(typeof(GosheConsumerDefinition));
+                        //cfg.AddSagaStateMachine<UtilizeCreditStateMachine, UtilizeCredit>().InMemoryRepository();
                     });
 
                     services.AddHostedService<MassTransitConsoleHostedService>();
